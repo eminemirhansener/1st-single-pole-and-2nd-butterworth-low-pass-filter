@@ -6,7 +6,7 @@ This repository provides an implementation of low-pass filters (LPF) for signal 
 
 ### Filter Performance Comparison
 ![Filter Performance](images/serial_plotter_output.png)
-*Figure 1: Comparison of Raw Signal (with 20Hz noise), 1st-Order LPF, and 2nd-Order Butterworth Filter ($f_c = 5Hz$).*
+*Figure 1: Comparison of Raw Signal (with 20Hz noise), 1st-Order LPF, and 2nd-Order Butterworth Filter (f_c = 5Hz).*
 
 ---
 
