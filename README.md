@@ -4,12 +4,11 @@
 
 This repository provides an implementation of low-pass filters (LPF) for signal processing on Arduino or in C++ environments. It includes classes for a 1st-order Low Pass Filter and a 2nd-order Butterworth Filter, both discretized for digital systems using the **Bilinear Transform**, also known as the Tustin method. These filters are useful for attenuating high-frequency noise in signals, such as sensor data or audio processing.
 
-### Filter Performance Comparison
-<div align="center">
-  <img src="images/serial_plotter_output.png" alt="Filter Performance">
+<p align="center">
+  <img src="images/serial_plotter_output.png" alt="Filter Performance" />
   <br>
   <em>Figure 1: Comparison of Raw Signal (with 20Hz noise), 1st-Order LPF, and 2nd-Order Butterworth Filter (f_c = 5Hz).</em>
-</div>
+</p>
 
 ---
 
@@ -36,7 +35,9 @@ A **transfer function** $H(s)$ describes the relationship between the input and 
 
 **Continuous-Time Transfer Function**:
 
-$$H(s) = \frac{\omega_0}{s + \omega_0}$$
+$$
+H(s) = \frac{\omega_0}{s + \omega_0}
+$$
 
 Where $\omega_0$ is the cutoff frequency in radians/second.
 
@@ -44,21 +45,27 @@ Where $\omega_0$ is the cutoff frequency in radians/second.
 
 By substituting $s = \frac{2}{T} \cdot \frac{z-1}{z+1}$, where $T$ is the sampling period:
 
-$$G(z) = \frac{\omega_0 T (z + 1)}{2(z - 1) + \omega_0 T (z + 1)}$$
+$$
+G(z) = \frac{\omega_0 T (z + 1)}{2(z - 1) + \omega_0 T (z + 1)}
+$$
 
 After rearranging to show delay elements ($z^{-1}$):
 
-$$G(z) = \frac{\omega_0 T (1 + z^{-1})}{(2 + \omega_0 T) + (\omega_0 T - 2) z^{-1}}$$
+$$
+G(z) = \frac{\omega_0 T (1 + z^{-1})}{(2 + \omega_0 T) + (\omega_0 T - 2) z^{-1}}
+$$
 
 **Difference Equation**:
 
-$$y[n] = \alpha \cdot x[n] + \alpha \cdot x[n-1] - \beta \cdot y[n-1]$$
+$$
+y[n] = \alpha \cdot x[n] + \alpha \cdot x[n-1] - \beta \cdot y[n-1]
+$$
 
 Where:
 
-$$\alpha = \frac{\omega_0 T}{2 + \omega_0 T}, \quad \beta = \frac{\omega_0 T - 2}{2 + \omega_0 T}$$
-
-
+$$
+\alpha = \frac{\omega_0 T}{2 + \omega_0 T}, \quad \beta = \frac{\omega_0 T - 2}{2 + \omega_0 T}
+$$
 
 ---
 
@@ -66,25 +73,31 @@ $$\alpha = \frac{\omega_0 T}{2 + \omega_0 T}, \quad \beta = \frac{\omega_0 T - 2
 
 The derivation starts from the general Butterworth formula:
 
-$$H(s) = \frac{1}{\sum_{k=0}^{n} \frac{a_k}{\omega_0^k} s^k}$$
+$$
+H(s) = \frac{1}{\sum_{k=0}^{n} \frac{a_k}{\omega_0^k} s^k}
+$$
 
 For $n=2$, the coefficients are derived using the recursive relationship $a_{k+1} = \frac{\cos(k\gamma)}{\sin((k+1)\gamma)} a_k$ with $\gamma = \frac{\pi}{4}$. This results in $a_0 = 1$, $a_1 = \sqrt{2}$, and $a_2 = 1$.
 
 **Continuous-Time Transfer Function**:
 
-$$G(s) = \frac{\omega_0^2}{s^2 + \sqrt{2} \omega_0 s + \omega_0^2}$$
-
-
+$$
+G(s) = \frac{\omega_0^2}{s^2 + \sqrt{2} \omega_0 s + \omega_0^2}
+$$
 
 **Z-Domain Transfer Function**:
 
 Using the Tustin substitution $s = \frac{2}{T} \cdot \frac{z-1}{z+1}$:
 
-$$G(z) = \frac{\omega_0^2 T^2 (z + 1)^2}{4(z - 1)^2 + 2\sqrt{2} \omega_0 T (z - 1)(z + 1) + \omega_0^2 T^2 (z + 1)^2}$$
+$$
+G(z) = \frac{\omega_0^2 T^2 (z + 1)^2}{4(z - 1)^2 + 2\sqrt{2} \omega_0 T (z - 1)(z + 1) + \omega_0^2 T^2 (z + 1)^2}
+$$
 
 The normalized Z-domain form (iterative form) is:
 
-$$G(z) = \frac{\frac{\omega_0^2 T^2}{a_0}(1 + 2z^{-1} + z^{-2})}{1 + \frac{a_1}{a_0} z^{-1} + \frac{a_2}{a_0} z^{-2}}$$
+$$
+G(z) = \frac{\frac{\omega_0^2 T^2}{a_0}(1 + 2z^{-1} + z^{-2})}{1 + \frac{a_1}{a_0} z^{-1} + \frac{a_2}{a_0} z^{-2}}
+$$
 
 Where:
 * $a_0 = \omega_0^2 T^2 + 2\sqrt{2} \omega_0 T + 4$
@@ -93,9 +106,9 @@ Where:
 
 **Difference Equation**:
 
-$$y[n] = \frac{\omega_0^2 T^2}{a_0} x[n] + \frac{2 \omega_0^2 T^2}{a_0} x[n-1] + \frac{\omega_0^2 T^2}{a_0} x[n-2] - \frac{a_1}{a_0} y[n-1] - \frac{a_2}{a_0} y[n-2]$$
-
-
+$$
+y[n] = \frac{\omega_0^2 T^2}{a_0} x[n] + \frac{2 \omega_0^2 T^2}{a_0} x[n-1] + \frac{\omega_0^2 T^2}{a_0} x[n-2] - \frac{a_1}{a_0} y[n-1] - \frac{a_2}{a_0} y[n-2]
+$$
 
 ---
 
@@ -105,11 +118,15 @@ The frequency response is obtained by substituting $s = j\omega$ into the contin
 
 ### 1st-Order LPF:
 
-$$H(j\omega) = \frac{1}{1 + j(\omega / \omega_0)}$$
+$$
+H(j\omega) = \frac{1}{1 + j(\omega / \omega_0)}
+$$
 
 **Magnitude**:
 
-$$|H(j\omega)| = \frac{1}{\sqrt{1 + (\omega / \omega_0)^2}}$$
+$$
+|H(j\omega)| = \frac{1}{\sqrt{1 + (\omega / \omega_0)^2}}
+$$
 
 * **Passband**: $|H| = 1$ at $\omega = 0$.
 * **Cutoff**: $|H| = 1/\sqrt{2} \approx 0.707$ (-3 dB) at $\omega = \omega_0$.
@@ -117,17 +134,21 @@ $$|H(j\omega)| = \frac{1}{\sqrt{1 + (\omega / \omega_0)^2}}$$
 
 **Phase**:
 
-$$\angle H(j\omega) = -\tan^{-1}(\omega / \omega_0)$$
-
-
+$$
+\angle H(j\omega) = -\tan^{-1}(\omega / \omega_0)
+$$
 
 ### 2nd-Order Butterworth:
 
-$$H(j\omega) = \frac{\omega_0^2}{-\omega^2 + j\sqrt{2}\omega_0 \omega + \omega_0^2}$$
+$$
+H(j\omega) = \frac{\omega_0^2}{-\omega^2 + j\sqrt{2}\omega_0 \omega + \omega_0^2}
+$$
 
 **Magnitude**:
 
-$$|H(j\omega)| = \frac{1}{\sqrt{1 + (\omega / \omega_0)^4}}$$
+$$
+|H(j\omega)| = \frac{1}{\sqrt{1 + (\omega / \omega_0)^4}}
+$$
 
 * **Passband**: Maximally flat response with no ripple.
 * **Cutoff**: $|H| = 1/\sqrt{2}$ at $\omega = \omega_0$.
@@ -138,12 +159,12 @@ $$|H(j\omega)| = \frac{1}{\sqrt{1 + (\omega / \omega_0)^4}}$$
 
 ## Comparisons Between Filters
 
-| Aspect | 1st-Order LPF | 2nd-Order Butterworth LPF |
-| :--- | :--- | :--- |
-| **Roll-Off** | -20 dB/decade | -40 dB/decade |
-| **Passband Flatness** | Moderate | Maximally Flat |
-| **Phase Distortion** | Moderate | Higher near cutoff |
-| **Computational Cost** | Very Low | Moderate |
-| **Memory Elements** | 2 Delay elements | 4 Delay elements |
+| Aspect                  | 1st-Order LPF              | 2nd-Order Butterworth LPF     |
+|-------------------------|----------------------------|-------------------------------|
+| **Roll-Off**            | -20 dB/decade              | -40 dB/decade                 |
+| **Passband Flatness**   | Moderate                   | Maximally Flat                |
+| **Phase Distortion**    | Moderate                   | Higher near cutoff            |
+| **Computational Cost**  | Very Low                   | Moderate                      |
+| **Memory Elements**     | 2 Delay elements           | 4 Delay elements              |
 
 The Butterworth filter is ideal for applications requiring a clean passband and sharp noise rejection, while the 1st-order filter is suitable for simple smoothing tasks.
